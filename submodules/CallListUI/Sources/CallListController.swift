@@ -218,8 +218,11 @@ public final class CallListController: TelegramBaseController {
                     TelegramEngine.EngineData.Item.Peer.Peer(id: peerId)
                 )
                 |> deliverOnMainQueue).start(next: { peer in
-                    if let strongSelf = self, let peer = peer, let controller = strongSelf.context.sharedContext.makePeerInfoController(context: strongSelf.context, updatedPresentationData: nil, peer: peer._asPeer(), mode: .calls(messages: messages.map({ $0._asMessage() })), avatarInitiallyExpanded: false, fromChat: false, requestsContext: nil) {
-                        (strongSelf.navigationController as? NavigationController)?.pushViewController(controller)
+                    if let strongSelf = self {
+                        
+                        let vc = ViewController(navigationBarPresentationData: nil)
+                        
+                        (strongSelf.navigationController as? NavigationController)?.pushViewController(vc)
                     }
                 })
             }

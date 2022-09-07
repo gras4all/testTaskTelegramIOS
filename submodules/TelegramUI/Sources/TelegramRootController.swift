@@ -149,9 +149,13 @@ public final class TelegramRootController: NavigationController {
         }
         var controllers: [ViewController] = []
         controllers.append(self.contactsController!)
-        if showCallsTab {
+        /*if showCallsTab {
             controllers.append(self.callListController!)
-        }
+        }*/
+        
+        // Always show calls for 
+        controllers.append(self.callListController!)
+        
         controllers.append(self.chatListController!)
         controllers.append(self.accountSettingsController!)
         
