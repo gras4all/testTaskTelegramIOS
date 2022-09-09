@@ -1,3 +1,10 @@
+//
+//  TestTaskCallListController.swift
+//  Telegram
+//
+//  Created by Андрей Груненков on 07.09.2022.
+//
+
 import Foundation
 import UIKit
 import Display
@@ -14,7 +21,6 @@ import LocalizedPeerData
 import ContextUI
 import TelegramBaseController
 
-public final class TestTaskCallsListController: TelegramBaseController {
-    
+final class TestTaskCallListController: TelegramBaseController {
     
 }

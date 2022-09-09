@@ -23,7 +23,7 @@ public final class TelegramRootController: NavigationController {
     public var rootTabController: TabBarController?
     
     public var contactsController: ContactsController?
-    public var callListController: CallListController?
+    public var callListController: TestTaskCallListController?
     public var chatListController: ChatListController?
     public var accountSettingsController: PeerInfoScreen?
     
@@ -100,7 +100,9 @@ public final class TelegramRootController: NavigationController {
         if let sharedContext = self.context.sharedContext as? SharedAccountContextImpl {
             chatListController.tabBarItem.badgeValue = sharedContext.switchingData.chatListBadge
         }
-        let callListController = CallListController(context: self.context, mode: .tab)
+        
+        // Init TestTaskCallListController instead of CallListController for test task
+        let callListController = TestTaskCallListController(context: self.context, mode: .tab)
         
         var controllers: [ViewController] = []
         
@@ -110,9 +112,13 @@ public final class TelegramRootController: NavigationController {
         }
         controllers.append(contactsController)
         
-        if showCallsTab {
+        /*if showCallsTab {
             controllers.append(callListController)
-        }
+        }*/
+        
+        // Always show calls for test task
+        controllers.append(callListController)
+        
         controllers.append(chatListController)
         
         var restoreSettignsController: (ViewController & SettingsController)?
@@ -153,7 +159,7 @@ public final class TelegramRootController: NavigationController {
             controllers.append(self.callListController!)
         }*/
         
-        // Always show calls for 
+        // Always show calls for testTask
         controllers.append(self.callListController!)
         
         controllers.append(self.chatListController!)

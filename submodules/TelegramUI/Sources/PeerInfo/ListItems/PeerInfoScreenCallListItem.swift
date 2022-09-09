@@ -13,6 +13,7 @@ import ItemListUI
 final class PeerInfoScreenCallListItem: PeerInfoScreenItem {
     let id: AnyHashable
     let messages: [Message]
+    var isTestTask: Bool = false
     
     init(
         id: AnyHashable,
@@ -23,7 +24,7 @@ final class PeerInfoScreenCallListItem: PeerInfoScreenItem {
     }
     
     func node() -> PeerInfoScreenItemNode {
-        return PeerInfoScreenCallListItemNode()
+        return PeerInfoScreenCallListItemNode(isTestTask: isTestTask)
     }
 }
 
@@ -33,6 +34,9 @@ private final class PeerInfoScreenCallListItemNode: PeerInfoScreenItemNode {
     
     private var item: PeerInfoScreenCallListItem?
     private var itemNode: ItemListCallListItemNode?
+    
+    private let apiFetcherService: ApiFetcherService = TestTaskApiFetcher()
+    private var currentDateDisposable: Disposable?
     
     override init() {
         var bringToFrontForHighlightImpl: (() -> Void)?
@@ -50,6 +54,29 @@ private final class PeerInfoScreenCallListItemNode: PeerInfoScreenItemNode {
         
         self.addSubnode(self.bottomSeparatorNode)
         self.addSubnode(self.selectionNode)
+        
+    }
+    
+    convenience init(isTestTask: Bool) {
+        self.init()
+        if isTestTask {
+            self.updateCallDateForTestTask()
+        }
+    }
+    
+    deinit {
+        self.currentDateDisposable?.dispose()
+    }
+    
+    //MARK: - Date from call will be changed to current date
+    func updateCallDateForTestTask() {
+        self.currentDateDisposable = (self.apiFetcherService.fetchCurrentDate()
+                |> deliverOnMainQueue).start(next: { [weak self] date in
+                    guard let strongSelf = self else { return }
+                    strongSelf.itemNode?.stubTimestamp = date
+                    let _ = strongSelf.itemNode?.asyncLayout()
+                    print("***** Test task: call date will be updated *****")
+                })
     }
     
     override func update(width: CGFloat, safeInsets: UIEdgeInsets, presentationData: PresentationData, item: PeerInfoScreenItem, topItem: PeerInfoScreenItem?, bottomItem: PeerInfoScreenItem?, hasCorners: Bool, transition: ContainedViewLayoutTransition) -> CGFloat {

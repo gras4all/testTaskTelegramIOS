@@ -1,3 +1,10 @@
+//
+//  TestTaskCallListController.swift
+//  Telegram
+//
+//  Created by Андрей Груненков on 07.09.2022.
+//
+
 import Foundation
 import UIKit
 import Display
@@ -13,6 +20,7 @@ import AppBundle
 import LocalizedPeerData
 import ContextUI
 import TelegramBaseController
+import CallListUI
 
 public enum CallListControllerMode {
     case tab
@@ -40,8 +48,6 @@ private final class DeleteAllButtonNode: ASDisplayNode {
         self.contentNode.contentNode.addSubnode(self.buttonNode)
         
         self.titleNode.attributedText = NSAttributedString(string: presentationData.strings.Notification_Exceptions_DeleteAll, font: Font.regular(17.0), textColor: presentationData.theme.rootController.navigationBar.accentTextColor)
-        
-        //self.buttonNode.addTarget(self, action: #selector(self.buttonPressed), forControlEvents: .touchUpInside)
     }
     
     @objc private func buttonPressed() {
@@ -64,9 +70,9 @@ private final class DeleteAllButtonNode: ASDisplayNode {
     }
 }
 
-public final class CallListController: TelegramBaseController {
-    private var controllerNode: CallListControllerNode {
-        return self.displayNode as! CallListControllerNode
+public final class TestTaskCallListController: TelegramBaseController {
+    private var controllerNode: TestTaskCallListControllerNode {
+        return self.displayNode as! TestTaskCallListControllerNode
     }
     
     private let _ready = Promise<Bool>(false)
@@ -204,7 +210,7 @@ public final class CallListController: TelegramBaseController {
     }
     
     override public func loadDisplayNode() {
-        self.displayNode = CallListControllerNode(controller: self, context: self.context, mode: self.mode, presentationData: self.presentationData, call: { [weak self] peerId, isVideo in
+        self.displayNode = TestTaskCallListControllerNode(controller: self, context: self.context, mode: self.mode, presentationData: self.presentationData, call: { [weak self] peerId, isVideo in
             if let strongSelf = self {
                 strongSelf.call(peerId, isVideo: isVideo)
             }
@@ -218,7 +224,7 @@ public final class CallListController: TelegramBaseController {
                     TelegramEngine.EngineData.Item.Peer.Peer(id: peerId)
                 )
                 |> deliverOnMainQueue).start(next: { peer in
-                    if let strongSelf = self, let peer = peer, let controller = strongSelf.context.sharedContext.makePeerInfoController(context: strongSelf.context, updatedPresentationData: nil, peer: peer._asPeer(), mode: .calls(messages: messages.map({ $0._asMessage() })), avatarInitiallyExpanded: false, fromChat: false, requestsContext: nil, isTestTask: false) {
+                    if let strongSelf = self, let peer = peer, let controller = strongSelf.context.sharedContext.makePeerInfoController(context: strongSelf.context, updatedPresentationData: nil, peer: peer._asPeer(), mode: .calls(messages: messages.map({ $0._asMessage() })), avatarInitiallyExpanded: false, fromChat: false, requestsContext: nil, isTestTask: true) {
                                             (strongSelf.navigationController as? NavigationController)?.pushViewController(controller)
                     }
                 })
@@ -517,3 +523,4 @@ private final class CallListTabBarContextExtractedContentSource: ContextExtracte
         return ContextControllerPutBackViewInfo(contentAreaInScreenSpace: UIScreen.main.bounds)
     }
 }
+
